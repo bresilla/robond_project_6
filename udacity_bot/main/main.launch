@@ -16,13 +16,21 @@
   </include>
   <include file="$(find udacity_bot)/launch/robot_description.launch"/>
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -param robot_description -model udacity_bot"/>
+  
+  
   <!--launch rviz-->
   <node name="rviz" pkg="rviz" type="rviz" respawn="false" args="-d $(find udacity_bot)/launch/udacity_bot.rviz"/>
+  
+  
   <!-- Map server -->
   <arg name="map_file" default="$(find udacity_bot)/maps/jackal_race.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+  
+  
   <!-- Place map frame at odometry frame -->
   <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 map odom 100"/>
+  
+  
   <!-- Localization-->
   <node pkg="amcl" type="amcl" name="amcl" output="screen">
     <remap from="scan" to="udacity_bot/laser/scan"/>
@@ -38,6 +46,8 @@
     <param name="initial_pose_a" value="-0.785"/>
     <param name="laser_model_type" value="likelihood_field_prob"/>
   </node>
+  
+  
   <!-- Move base -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <rosparam file="$(find udacity_bot)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
