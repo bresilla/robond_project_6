@@ -7,23 +7,23 @@
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find rover)/worlds/jackal_race.world"/>
+    <arg name="world_name" value="$(find bresilla)/worlds/jackal_race.world"/>
     <arg name="paused" value="$(arg paused)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="gui" value="$(arg gui)"/>
     <arg name="headless" value="$(arg headless)"/>
     <arg name="debug" value="$(arg debug)"/>
   </include>
-  <include file="$(find rover)/launch/robot_description.launch"/>
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -param robot_description -model rover"/>
+  <include file="$(find bresilla)/launch/bresilla.launch"/>
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -param robot_description -model bresilla"/>
   
   
   <!--launch rviz-->
-  <node name="rviz" pkg="rviz" type="rviz" respawn="false" args="-d $(find rover)/launch/rover.rviz"/>
+  <node name="rviz" pkg="rviz" type="rviz" respawn="false" args="-d $(find bresilla)/launch/bresilla.rviz"/>
   
   
   <!-- Map server -->
-  <arg name="map_file" default="$(find rover)/maps/jackal_race.yaml"/>
+  <arg name="map_file" default="$(find bresilla)/maps/jackal_race.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
   
   
@@ -33,7 +33,7 @@
   
   <!-- Localization-->
   <node pkg="amcl" type="amcl" name="amcl" output="screen">
-    <remap from="scan" to="rover/laser/scan"/>
+    <remap from="scan" to="bresilla/laser/scan"/>
     <param name="odom_frame_id" value="odom"/>
     <param name="odom_model_type" value="diff-corrected"/>
     <param name="base_frame_id" value="robot_footprint"/>
@@ -50,14 +50,14 @@
   
   <!-- Move base -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-    <rosparam file="$(find rover)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find rover)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find rover)/config/local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find rover)/config/global_costmap_params.yaml" command="load" />
-    <rosparam file="$(find rover)/config/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find bresilla)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find bresilla)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find bresilla)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find bresilla)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find bresilla)/config/base_local_planner_params.yaml" command="load" />
     <remap from="cmd_vel" to="cmd_vel"/>
     <remap from="odom" to="odom"/>
-    <remap from="scan" to="rover/laser/scan"/>
+    <remap from="scan" to="bresilla/laser/scan"/>
     <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
   </node>

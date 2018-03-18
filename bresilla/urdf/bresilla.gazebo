@@ -36,7 +36,7 @@
             <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
                 <alwaysOn>true</alwaysOn>
                 <updateRate>0.0</updateRate>
-                <cameraName>rover/camera1</cameraName>
+                <cameraName>bresilla/camera1</cameraName>
                 <imageTopicName>image_raw</imageTopicName>
                 <cameraInfoTopicName>camera_info</cameraInfoTopicName>
                 <frameName>camera</frameName>
@@ -76,7 +76,7 @@
                 </noise>
             </ray>
             <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
-                <topicName>/rover/laser/scan</topicName>
+                <topicName>/bresilla/laser/scan</topicName>
                 <frameName>hokuyo</frameName>
             </plugin>
         </sensor>

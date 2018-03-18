@@ -1,7 +1,7 @@
 <?xml version='1.0'?>
 
-<robot name="rover" xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:include filename="$(find rover)/urdf/rover.gazebo" />
+<robot name="bresilla" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename="$(find bresilla)/urdf/bresilla.gazebo" />
     <link name="robot_footprint"></link>
 
     <joint name="robot_footprint_joint" type="fixed">
@@ -117,7 +117,7 @@
         <visual name='hokuyo_visual'>
             <origin xyz="0.0 0 0" rpy=" 0 0 0"/>
             <geometry>
-                <mesh filename="package://rover/meshes/hokuyo.dae"/>
+                <mesh filename="package://bresilla/meshes/hokuyo.dae"/>
                 <!-- <box size="0.1 0.1 0.1"/> -->
             </geometry>
         </visual>
