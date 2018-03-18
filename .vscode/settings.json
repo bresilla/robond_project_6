@@ -1,3 +1,10 @@
 {
-    "ros.distro": "kinetic"
+  "ros.distro": "kinetic",
+  "files.exclude": {
+    "__error": "Not found",
+    "CMakeLists.txt": true,
+    "images": true,
+    ".vscode": true,
+    "udacity_bot": true
+  }
 }
