@@ -4,7 +4,6 @@
     "__error": "Not found",
     "CMakeLists.txt": true,
     "images": true,
-    ".vscode": true,
-    "udacity_bot": true
+    ".vscode": true
   }
 }

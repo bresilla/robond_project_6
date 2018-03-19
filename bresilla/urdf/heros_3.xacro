@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <robot name="innok_heros_3" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <xacro:property name="PI" value="3.1415926535897931"/>
