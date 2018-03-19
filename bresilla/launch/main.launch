@@ -16,8 +16,8 @@
     </include>
 
   <!-- Send the Innok Heros URDF/XACRO to param server -->
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find bresilla)/urdf/rover.urdf'" />
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -z 0.4 -x -0.3 -y 0.4 -model heros -param robot_description"/>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find bresilla)/urdf/heros_3.xacro'" />
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -z 0.4 -x -4 -y 4 -model heros -param robot_description"/>
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
@@ -42,11 +42,11 @@
     <param name="odom_model_type" value="diff-corrected"/>
     <param name="base_frame_id" value="base_link"/>
     <param name="global_frame_id" value="map"/>
-    <param name="min_particles" value="20"/>
+    <param name="min_particles" value="50"/>
     <param name="max_particles" value="500"/>
-    <param name="transform_tolerance" value="0.25"/>
-    <param name="initial_pose_x" value="0.0"/>
-    <param name="initial_pose_y" value="0.0"/>
+    <param name="transform_tolerance" value="0.2"/>
+    <param name="initial_pose_x" value="-4"/>
+    <param name="initial_pose_y" value="4"/>
     <param name="initial_pose_a" value="-0.785"/>
     <param name="laser_model_type" value="likelihood_field_prob"/>
   </node>

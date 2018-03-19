@@ -21,9 +21,9 @@
     </link>
     
     <joint type="fixed" name="camera_joint">
-      <origin xyz="0.84 0 -0.02" rpy="0 0 0"/>
+      <origin xyz="0.78 0 -0.02" rpy="0 0 0"/>
       <child link="camera"/>
-      <parent link="mounting_plate"/>
+      <parent link="base_link"/>
     </joint>
 
     <gazebo reference="camera">

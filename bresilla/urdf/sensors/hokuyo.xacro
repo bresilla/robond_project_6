@@ -21,24 +21,24 @@
     </link>
 
     <joint type="fixed" name="hokuyo_joint">
-      <origin xyz="0.45 0 0.02" rpy="0 0 0"/>
+      <origin xyz="0.45 0 0.05" rpy="0 0 0"/>
       <child link="hokuyo"/>
-      <parent link="mounting_plate"/>
+      <parent link="base_link"/>
     </joint>
 
 
     <gazebo reference="hokuyo">
       <sensor type="ray" name="head_hokuyo_sensor">
         <pose>0 0 0 0 0 0</pose>
-        <visualize>true</visualize>
+        <visualize>false</visualize>
         <update_rate>40</update_rate>
         <ray>
           <scan>
             <horizontal>
               <samples>720</samples>
               <resolution>1</resolution>
-              <min_angle>-3.1570796</min_angle>
-              <max_angle>3.1570796</max_angle>
+              <min_angle>-3.570796</min_angle>
+              <max_angle>3.570796</max_angle>
             </horizontal>
           </scan>
           <range>

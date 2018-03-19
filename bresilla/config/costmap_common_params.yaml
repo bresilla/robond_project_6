@@ -1,12 +1,13 @@
 map_type: costmap
 
-obstacle_range: 5.0
-raytrace_range: 8.0
+obstacle_range: 4.0
+raytrace_range: 6.0
 
 transform_tolerance: 0.2
 
-#robot_radius: ir_of_robot 
-inflation_radius: 0.9
+#robot_radius: ir_of_robot
+footprint: [[-0.4, -0.5], [-0.4, 0.5], [0.4, 0.5], [0.4, -0.5]] 
+inflation_radius: 0.8
 
 observation_sources: laser_scan_sensor
 
