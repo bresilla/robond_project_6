@@ -31,125 +31,94 @@
     \section{Introduction}
     \label{sec:introduction}
     
-    \IEEEPARstart{L}{ocalisation} is one of the biggest challenge in mobile robotic. Determining robot's pose in mapped environment is very important for later activities like path-planning, manipulation etc. This is highly important in environment where precision very high (manufacturing). Using different probabilistic algorithms to filter noise from sensors (IMU, Rotary Encoders, Range-filters or 3D cameras).
-    
-    %example for inserting image
-    \begin{figure}[thpb]
-          \centering
-          \includegraphics[width=\linewidth]{overview_tf.png}
-          \caption{Naigation Stack Setup}
-          \label{fig:robot1}
+    \IEEEPARstart{L}{ocalisation} is one of the biggest challenge in mobile robotic. Determining robot's pose in mapped environment is very important for later activities like path-planning, manipulation etc. This is highly important in environment where precision very high (manufacturing). Using different probabilistic algorithms to filter noise from sensors (IMU, Rotary Encoders, Range-filters or 3D cameras). Filtering noisy signals is essential since many sensors have an output that is to noisy too be used directly, and different filter techniques lets you account for the uncertainty in the signal/state. One important use of generating non-observable states is for estimating velocity. It is common to have position sensors (encoders) on different joints; however, simply differentiating the position to get velocity produces noisy results. Navigation is one of the most challenging competencies required of a mobile robot. Success
+    in navigation requires success at the four building blocks of navigation: perception - the robot must interpret its sensors to extract meaningful data; localization - the robot must determine its position in the environment; cognition - the robot must decide how to act to achieve its goals; and motion control -  the robot must modulate its motor outputs to achieve the desired trajectory.
+
+    \section{Background}
+    The general localization problem is composed by two increasingly difficult sub-problems. In the position tracking problem the robot knows its initial location in the environment. The goal of the localization is to keep track of the position while the robot is navigating through the environment. Methods that address this problem are called local techniques. In the global localization, instead, problem the robot does not know its initial position and it has to localize itself from scratch. It hereby possibly needs to be able to deal with multiple hypotheses about its location. Methods that solve this problem are called global techniques. An even harder problem is the kidnapped robot problem. The robot is already correctly localized but it is transferred (or “kidnapped”), to another location without the robot being aware of this. This can happen for example in the case of failures or if the robot is physically moved by an operator. The problem for the robot is to detect that it has been kidnapped and to find out what its new location is. In determining its location, a robot has access to two kinds of information. First, it has a-priori information gathered by the robot itself or supplied by an external source in an initialization phase. Second, the robot gets information about the environment through every observation and action it makes during navigation. In general, the a prior information supplied to the robot describes the environment where the robot is driving around. It specifies certain features that are time-invariant and thus can
+    be used to determine a location.  As one of the fundamental problems in mobile robot navigation, many solutions (algorithms) are used to tackle this problem including approaches employing Kalman filtering, grid-based Markov localization,  or Monte Carlo methods.
+
+    \begin{figure}[thptb]
+        \centering
+        \includegraphics[width=\linewidth]{generalnav.png}
+        \caption{General schematic for mobile robot localization}
+        \label{fig:robot1}
     \end{figure}
 
-    %example for building table
-    \begin{table}[h]
-    \caption{Table}
-    \label{table_example}
-    \begin{center}
-    \begin{tabular}{|c||c|}
-    \hline
-    One & Two\\
-    \hline
-    Three & Four\\
-    \hline
-    \end{tabular}
-    \end{center}
-    \end{table}
+
     
-    
-    
-    \section{Background}
-    At this stage, you should begin diving into the technical details of your approach by explaining to the reader what are the characteristics of the filters, what localization method was chosen, and the reason that it was selected (i.e. particle filters). 
-    This should be factual and authoritative, meaning you should not use language such as "I think this will work" or "Maybe Monte Carlo Localization with these parameters is better...". Instead, focus on items similar to, "Adaptive Monte Carlo Localization was chosen because..."
 
     \subsection{Kalman Filters}
-    Briefly describe Kalman filters. Explain how they work and why they are used for localization. Additionally, discuss the drawbacks of linear Kalman filters and how Extended Kalman Filters (EKFs) help resolve some of these issues.
-    
+    The Extended Kalman Filter (EKF) has been used for many years to estimate the state of a nonlinear system from noisy measurements.It iss based on the linearization of the nonlinear maps around the estimated trajectory, and on the assumption that the initial state and measurement noises are Gaussian and uncorrelated each other. Basically uses a series of measurements observed over time, containing statistical noise and other inaccuracies, and produces estimates of unknown variables that tend to be more accurate than those based on a single measurement alone, by estimating a joint probability distribution over the variables for each timeframe.
+
     \subsection{Particle Filters}
-    Briefly explain what a particle filter is, how it is used, and why it is useful.
+    Adaptive Monte Carlo localization (AMCL), also known as particle filter localization, is an algorithm for robots to localize using a particle filter. Given a map of the environment, the algorithm estimates the position and orientation of a robot as it moves and senses the environment. The algorithm uses a particle filter to represent the distribution of likely states, with each particle representing a possible state, i.e., a hypothesis of where the robot is. The algorithm typically starts with a uniform random distribution of particles over the configuration space, meaning the robot has no information about where it is and assumes it is equally likely to be at any point in space. Whenever the robot moves, it shifts the particles to predict its new state after the movement. Whenever the robot senses something, the particles are resampled based on recursive Bayesian estimation, i.e., how well the actual sensed data correlate with the predicted state. Ultimately, the particles should converge towards the actual position of the robot.
+
+
+    \begin{figure}[thptb]
+        \centering
+        \includegraphics[width=\linewidth]{amcl.png}
+        \caption{AMCL parameters}
+        \label{fig:robot3}
+    \end{figure}
     
     \subsection{Comparison / Contrast}
-    Explain the benefits and disadvantages of using a Kalman Filter / Particle Filter. Why would you use one over the other? Also inform the reader that the work presented here will be using only particle filters. 
-    
-    %example for Bullet point list
-    \begin{itemize}
-    \item example 1
-    \item example 2
-    \end {itemize}
-    
-    %example for numbered list
+    Compared to all other algorithhs for localisation, AMCL by using sampling-based representation, has has
+    several key advantages over earlier work in the field:
     \begin{enumerate}
-    \item example 1
-    \item example 2
-    \end{enumerate}
-    
+        \item In contrast to existing Kalman filtering based techniques, it is able to represent multi-modal distributions and thus can globally localize a robot.
+        \item It  drastically  reduces  the  amount  of  memory  required compared to grid-based localization and can integrate measurements at a considerably higher frequency.
+        \item Can be easily controlled to focus resources to a more relevant area or interest points by sampling in proportion to the posterior likelihood.
+        \item It is more accurate than Markov localization with a fixed cell size, as the state represented in  the samples is not discretized.
+        \item By controlling the number of samples on-line, particle filters can adapt to the available computational resources.
+        \item It is much easier to implement.
+    \end {enumerate}
+
     \section{Simulations}
-    This section should discuss the performance of robots in simulation. Items to include are the robot model design, packages used, and the parameters chosen for the robot to properly localize itself. The information provided here is critical if anyone would like to replicate your results. After all, the intent of reports such as these are to convey information and build upon ideas so you want to ensure others can validate your process.
-    You should have at least two images here: one that shows your standard robot used in the first part of the project, and a second robot that you modified / built that is different from the first robot. Remember to watermark all of your images as well. 
+    RThe 3D simulation is performed with Gazebo , a 3D robot simulator. Gazebo is a complete physical simulation
+    of robots including shapes, joints, contacts, collisions, and friction. Gazebo utilized the 3D framework for rendering the environment and objects.  It uses a physics engine that can simulate rigid body    dynamics. During the simulation, Gazebo publishes the models’ states and behaviors via the ROS middleware’s communication infrastructure so that all other nodes can use these parameters for triggering certain actions. Gazebo  uses  URDF  (Unified  Robot  Description  Format) files for the description of the models. The physical elements for the simulation can be modeled with all common 3D modeling tools such as Blender. Gazebo further offers the possibility to draw defined simple geometric objects, such as boxes, spheres, and
+    cylinders  with  a  single  XML  tag.   All  of  these  simple  elements  or  meshed  elements,  i.e.  more complex  polyhedral objects, can be linked together with joints. Gazebo distinguishes between different kinds of joints to be able to calculate their physical state. This enables to confine the degrees of freedom to the desired ones. By defining a mass, inertia and friction values for an element, the physics engine can simulate its dynamic behavior in a realistic way.
+
+    In our case, we simulate a differential wheel robot. This is the most common control mechanism for robot builders, especially for beginners. The concept is simple; Velocity difference between two motors drive the robot in any required path and direction. Hence the name “Differential” drive. Differential wheeled robot can have two independently driven wheels fixed on a common horizontal axis or three wheels where two independently driven wheels and a roller ball or a castor attached to maintain equilibrium. Controlling a differential robot can be difficult sometimes. Since the drive wheels are independent, if they are not turning at exactly the same rate the robot will veer to one side. Making the drive motors turn at the same rate is a challenge due to slight differences in the motors, friction differences in the drivetrains, and friction differences in the wheel-ground interface. To ensure that the robot is traveling in a straight line, it may be necessary to adjust the motor RPM very often (many times per second). This may require interrupt-based software and assembly language programming. It is also very important to have accurate information on wheel position. This usually comes from the odometry sensors. Gazebo, is very suited to simulate and account for all those problems and sent real ground truth odometry data via simulated sensors.
+
+    Anoher piece fo the puzzle is the navigation. After receiving the odometry data from the robot, we have to calculate based on given map, the pose and the path to the desired point. We do that by using two libraries of ROS: the Adaptive Monte carlo Localization implementation and Navigation Stack. For the navigation stack, there are some requirements asked to the robot:
+    \begin{enumerate}
+        \item The navigation stack can only handle a differential drive.
+        \item It requires that the robot publishes information about the relationships between the positions of all the	joints and sensors.
+        \item The robot must send messages with linear and angular velocities.
+        \item A	planar laser must be on	the	robot to create	the	map	and	localization.
+    \end {enumerate}
+    The diagram below shows how navigation stack should be organized.
+
+
+    \begin{figure}[thptb]
+        \centering
+        \includegraphics[width=\linewidth]{overview_tf.png}
+        \caption{ROS tf stack}
+        \label{fig:robot2}
+    \end{figure}
+
+    The	navigation stack needs to know the position	of the sensors, wheels, and joints. To do that, we use the	Transform Frames (tf) software library (a huge complex math calculation framework - always good to avoid reinventing the wheel).	
+
+    \section{The robot}
+    There are three simulated robots in this work. One build from scratch, a differential simple model, and two models (GitHub), which are completely modified, practically just the 3D layout and meshes are used. One of them is a skid steering drive, which actually does not work properly with navigation stack, but for the purpose of checking the performance of AMCL, this model was observed too.
     
-    \subsection{Achievements}
-    You should describe what you achieved for localization in the project with the benchmark model and your own model. Includes charts and graphs show how parameters affect your performance. 
-    
-    % Robot Models
-    \subsection{Benchmark Model}
     \subsubsection{Model design}
-    The Robot's design considerations should include: the size of the robot, the layout of sensors. This information can be shown in the form of a chart / table.
+    The first robot (scratch-designed) is fairly simple, using standard ROS - URDF files to generate collision, inertia and visuals (CIV). Each element of the robot has its own CIV description. Likes of origin, the xy cordinates where it is mounted to the parent link. Each element is connected to th another thorough a child-parent relation, until to the base-frame. In addition to the basic 3D shapes, there are the more intelegent shapes too, the likes of sensors. Where in addition to the CIV they include the driver code. In our simple robot, those were the wheel joint controller, camera and laser sensor. The drivers (based on ROS C++) publish the ground truth data from the simulator to the respective nodes (refer to the ROS if stack figure above).
+
+    \subsection{Technical Note} % only facts
+    Its worthy mentioning, that since the second model i used was with significant bigger footprint, the position where the robot was spawing was not big enough. So for that i had to make modification in X,Y spawn pose of the robot, and the same time, match this point with AMCL initializing pose.
     
-    \subsubsection{Packages Used}
-    The packages used in the project should be specified as well as the topics received and published; the services it used and provided should also be addressed. 
-    
-    \subsubsection{Parameters}
-    Localization parameters in the AMCL node should be described, as well as move\_base parameters in the configuration file. You should be able to clearly demonstrate your understanding of the impact of these parameters.
-    
-    \subsection{Personal Model}
-    % ditto
-    \subsubsection{Model design}
-    \subsubsection{Packages Used}
-    \subsubsection{Parameters}
-    
-    
-    \section{Results}
-    Present an unbiased view of your robot's performance and justify your stance with facts. Do the localization results look reasonable? What is the duration for the particle filters to converge? How long does it take for the robot to reach the goal? Does it follow a smooth path to the goal? Does it have unexpected behavior in the process? \\
-    For demonstrating your results, it is incredibly useful to have some watermarked charts, tables, and/or graphs for the reader to review. This makes ingesting the information quicker and easier.
-    
-    \subsection{Localization Results}
-    \subsubsection{Benchmark}
-    \subsubsection{Student}
-    
-    \subsection{Technical Comparison} % only facts
-    Discuss the difference of the layout, parameters, performance etc. between the benchmark robot and your robot. It is acceptable for your custom robot to perform worse than the provided robot. The focus is on learning and understanding, not performance. 
-    
-    \section{Discussion}
+    \subsection{Packages and Parameters}
+    As previously mentioned, two base package are used to work in conjunction with each other. MOVE\_BASE and AMCL. For the navigation stack to work as intended (described above), the AMCL algorithm had to be implemented. The AMCL algorithm has many configuration options that will affect the performance of localization. The min\_particles and max\_particles parameters set the minimum and maximum number of particles that are	allowed	for	the	algorithm. With	more particles, you get more accuracy, but this	increases the use of the CPU. The laser\_model\_type parameter is used to configure the laser type. In our	case, we are sing a	 likelihood\_field parameter but the algorithm can also use beam lasers. The laser\_likelihood\_max\_dist parameter is used to set the maximum distance for obstacle inflation on the	map, which is used	in	the	 likelihood\_field model (refer AMCL parameters figure above). 
+
+    In other hand, MOVE\_BASE has its own parameters. It used costmaps to store information about obstacles. One costmap is used for global planning, meaning creating long-term plans over the entire environment, and the other is used for local planning and obstacle avoidance. One of the most important parameters (both for local and global - referred as common costmap) is the laser observation source, which the whole stack defined the obstacles. Its the eyes of the stack. In our case laser scans from scan topic. Another parameter is obstaacle range and raytrace. Those two parameters go hand in had, as the first, based on its valus tells the stack when it sees a obstacle, while the second tell the stack how far is the path free to move on. Another parameter is the robot radius footprint. XY cordinates of each point of frame has to be give, or radius in case of rounded robot. The transform tolerance, represents the time that transform signals are valid for.
+   
+     
+    \section{Results and Discussion}
     This is the only section of the report where you may include your opinion. However, make sure your opinion is based on facts. If your robot performed poorly, make mention of what may be the underlying issues. If the robot runs well, which aspects contribute to that? Again, avoid writing in the first person (i.e. Do not use words like "I" or "me"). If you really find yourself struggling to avoid the word "I" or "me"; sometimes, this can be avoid with the use of the word “one”. As an example: instead of : "I think the robot cannot localize itself because the sensor does not provide enough information for localization" try: "one may believe the localization performance is poor because the sensor layout is not able to provide enough information for localization". They say the same thing, but the second avoids the first person. 
-    
-    \subsection{Topics}
-    \begin{itemize}
-    \item Which robot performed better?
-    \item Why it performed better? (opinion)
-    \item How would you approach the 'Kidnapped Robot' problem?
-    \item What types of scenario could localization be performed?
-    \item Where would you use MCL/AMCL in an industry domain?
-    \end {itemize}
-    
-    \section{Conclusion / Future work}
     This section is intended to summarize your report. Your summary should include a recap of the results, did this project achieve what you attempted, how would you deploy it on hardware and how could this project be applied to commercial products? 
     For Future Work, address areas of work that you may not have addressed in your report as possible next steps. This could be due to time constraints, lack of currently developed methods / technology, and areas of application outside of your current implementation. Again, avoid the use of the first-person.
-    
-    \subsection{Modifications for Improvement}
-    Examples:
-    \begin{itemize}
-    \item Base Dimension
-    \item Sensor Location
-    \item Sensor Layout
-    \item Sensor Amount
-    \end{itemize}
-    
-    \subsection{Hardware Deployment}
-    \begin{enumerate}
-    \item What would need to be done?
-    \item Computation time/resource considerations?
-    \end{enumerate}
-    
     
     
     \bibliography{bib}
