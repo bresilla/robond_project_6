@@ -7,17 +7,16 @@
     
     \begin{document}
     
-    \title{Project Title}
+    \title{Mobile Robot's Position and Orientation using Adaptive Monte Carlo Localization}
     
-    \author{Author Name}
+    \author{Trim Bresilla}
     
     \markboth{Localization project, Robotics Nanodegree Program, Udacity}%
     {}
     \IEEEtitleabstractindextext{%
     
     \begin{abstract}
-    An abstract is meant to be a summary of all of the relevant points in your presented work. It is designed to present a high-level overview of the report, providing just enough detail to convey the necessary information The abstract may often mention a one-sentence summary of the results.  While the type of voice chosen for the paper (active or passive) may be up for debate, you should avoid the use of "I" and "me" in the report. It usually is kept to a length of 150 - 200 words. 
-    Example: You should not write, "I built two different robot models for performance evaluation". Instead, you should try to say, "Two different robot models are considered for performance evaluation".
+    This work describes one of the challenges in localization of mobile robotic. Using different probabilistic techniques and algorithms served by Robotic Operating System, by filtering noisy sensor data, we are able to get precise pose of mobile robot. To do that, we use a package - AMCL - that goes through sensor readings and estimates the pose and orientation of the mobile robot. Movebase, another ROS package takes those readings and uses for navigation stack, that the robot reaches the destination. While all this is run through the Gazebo simulator with its own physics engine (that utilizes collision, visuals etc...). By tunning AMCL's parameters we can estimate very accurately robot's pose and orientation and then navigate to goal position without any collision.
     \end{abstract}
     
     % Note that keywords are not normally used for peerreview papers.
@@ -32,24 +31,16 @@
     \section{Introduction}
     \label{sec:introduction}
     
-    \IEEEPARstart{T}{he} introduction should provide some material regarding the history of the problem, why it is important and what is intended to be achieved. If there exists any previous attempts to solve this problem, this is a great place to note these while conveying the differences in your approach (if any). The intent is to provide enough information for the reader to understand why this problem is interesting and setting up the conversation for the solution you have provided
-    Use this space to introduce your localization task and how you wish to accomplish it; save the details about the robot construction for later (simulation is a good point for this information). 
-    If you have any papers / sites / repositories you have referenced for your robot, please make sure to cite them.
+    \IEEEPARstart{L}{ocalisation} is one of the biggest challenge in mobile robotic. Determining robot's pose in mapped environment is very important for later activities like path-planning, manipulation etc. This is highly important in environment where precision very high (manufacturing). Using different probabilistic algorithms to filter noise from sensors (IMU, Rotary Encoders, Range-filters or 3D cameras).
     
     %example for inserting image
     \begin{figure}[thpb]
           \centering
-          \includegraphics[width=\linewidth]{RobotRevolution5}
-          \caption{Robot Revolution.}
+          \includegraphics[width=\linewidth]{overview_tf.png}
+          \caption{Naigation Stack Setup}
           \label{fig:robot1}
     \end{figure}
-    
-    \subsection{Subsection Heading Here}
-    Subsection text here.
-    
-    \subsubsection{Subsubsection Heading Here}
-    Subsubsection text here.
-    
+
     %example for building table
     \begin{table}[h]
     \caption{Table}
@@ -70,8 +61,7 @@
     \section{Background}
     At this stage, you should begin diving into the technical details of your approach by explaining to the reader what are the characteristics of the filters, what localization method was chosen, and the reason that it was selected (i.e. particle filters). 
     This should be factual and authoritative, meaning you should not use language such as "I think this will work" or "Maybe Monte Carlo Localization with these parameters is better...". Instead, focus on items similar to, "Adaptive Monte Carlo Localization was chosen because..."
-    Provide a sufficient background into the scope of the problem technologically while also identifying some of the current challenges in robot localization and why the problem domain is an important piece of robotics.\cite{lamport1994latex}
-    
+
     \subsection{Kalman Filters}
     Briefly describe Kalman filters. Explain how they work and why they are used for localization. Additionally, discuss the drawbacks of linear Kalman filters and how Extended Kalman Filters (EKFs) help resolve some of these issues.
     
