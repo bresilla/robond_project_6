@@ -1,6 +1,7 @@
 \documentclass[10pt,journal,compsoc]{IEEEtran}
-
-    \usepackage[pdftex]{graphicx}    
+    \usepackage{caption}
+    \usepackage{subcaption,array}
+    \usepackage[pdftex]{graphicx}
     \usepackage{cite}
     \hyphenation{op-tical net-works semi-conduc-tor}
     
@@ -106,6 +107,20 @@
     \subsubsection{Model design}
     The first robot (scratch-designed) is fairly simple, using standard ROS - URDF files to generate collision, inertia and visuals (CIV). Each element of the robot has its own CIV description. Likes of origin, the xy cordinates where it is mounted to the parent link. Each element is connected to th another thorough a child-parent relation, until to the base-frame. In addition to the basic 3D shapes, there are the more intelegent shapes too, the likes of sensors. Where in addition to the CIV they include the driver code. In our simple robot, those were the wheel joint controller, camera and laser sensor. The drivers (based on ROS C++) publish the ground truth data from the simulator to the respective nodes (refer to the ROS if stack figure above).
 
+    \begin{figure}[!t]
+        \begin{tabular}[b]{cc}
+          \begin{tabular}[b]{c}
+            \begin{subfigure}[b]{0.4\columnwidth}
+                \includegraphics[width=\textwidth]{ubt.png} \caption{ScratchDesigned}
+                \label{fig:A} \end{subfigure}\\
+            \begin{subfigure}[b]{0.4\columnwidth}
+                \includegraphics[width=\textwidth]{skid.png} \caption{SkidSteer}
+                \label{fig:B} \end{subfigure} \end{tabular}
+        & \begin{subfigure}[b]{0.4\columnwidth}
+            \includegraphics[width=\textwidth]{diss.png} \caption{DiffSteer}
+            \label{fig:C} \end{subfigure} \end{tabular} \label{fig:ABC}
+            \caption{Different models tested in GAZEBO simulator} \end{figure}
+
     \subsection{Technical Note} % only facts
     Its worthy mentioning, that since the second model i used was with significant bigger footprint, the position where the robot was spawing was not big enough. So for that i had to make modification in X,Y spawn pose of the robot, and the same time, match this point with AMCL initializing pose.
     
@@ -113,12 +128,21 @@
     As previously mentioned, two base package are used to work in conjunction with each other. MOVE\_BASE and AMCL. For the navigation stack to work as intended (described above), the AMCL algorithm had to be implemented. The AMCL algorithm has many configuration options that will affect the performance of localization. The min\_particles and max\_particles parameters set the minimum and maximum number of particles that are	allowed	for	the	algorithm. With	more particles, you get more accuracy, but this	increases the use of the CPU. The laser\_model\_type parameter is used to configure the laser type. In our	case, we are sing a	 likelihood\_field parameter but the algorithm can also use beam lasers. The laser\_likelihood\_max\_dist parameter is used to set the maximum distance for obstacle inflation on the	map, which is used	in	the	 likelihood\_field model (refer AMCL parameters figure above). 
 
     In other hand, MOVE\_BASE has its own parameters. It used costmaps to store information about obstacles. One costmap is used for global planning, meaning creating long-term plans over the entire environment, and the other is used for local planning and obstacle avoidance. One of the most important parameters (both for local and global - referred as common costmap) is the laser observation source, which the whole stack defined the obstacles. Its the eyes of the stack. In our case laser scans from scan topic. Another parameter is obstaacle range and raytrace. Those two parameters go hand in had, as the first, based on its valus tells the stack when it sees a obstacle, while the second tell the stack how far is the path free to move on. Another parameter is the robot radius footprint. XY cordinates of each point of frame has to be give, or radius in case of rounded robot. The transform tolerance, represents the time that transform signals are valid for.
+
+    \begin{figure}[thptb]
+        \centering
+        \includegraphics[width=\linewidth]{goal_reched.png}
+        \caption{Goal reached}
+        \label{fig:robot3}
+    \end{figure}
    
      
     \section{Results and Discussion}
-    This is the only section of the report where you may include your opinion. However, make sure your opinion is based on facts. If your robot performed poorly, make mention of what may be the underlying issues. If the robot runs well, which aspects contribute to that? Again, avoid writing in the first person (i.e. Do not use words like "I" or "me"). If you really find yourself struggling to avoid the word "I" or "me"; sometimes, this can be avoid with the use of the word “one”. As an example: instead of : "I think the robot cannot localize itself because the sensor does not provide enough information for localization" try: "one may believe the localization performance is poor because the sensor layout is not able to provide enough information for localization". They say the same thing, but the second avoids the first person. 
-    This section is intended to summarize your report. Your summary should include a recap of the results, did this project achieve what you attempted, how would you deploy it on hardware and how could this project be applied to commercial products? 
-    For Future Work, address areas of work that you may not have addressed in your report as possible next steps. This could be due to time constraints, lack of currently developed methods / technology, and areas of application outside of your current implementation. Again, avoid the use of the first-person.
+    After tweaking (by trial and error) the parameters for AMCL and MOVE\_BASE packages, the robots would perform as expected. The scratched-design bot in a matter of seconds would find its location and would start steering towards the goal (see figure above). While the two other robots, because of their size had difficulties even after countless parameter tweaking, still to locate with precision their pose and perform movement. After spawing them in a ifferent part of the map, where they had more space to manouver (top right part of map), soon they will find the pose and start performing movement. 
+
+    As mentioned above, the skid steering drive robot is not properly supported by AMCL package, thus performing not a very optimal drive, but still reaching the target after few minutes.
+
+    The kidnapped scenario, where the robot would spawn in a different location, was very easily solved by AMCL as we used huge amount of particle points, this exacting the pose after just few iterations.
     
     
     \bibliography{bib}
