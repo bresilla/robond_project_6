@@ -17,7 +17,7 @@
 
   <!-- Send the Innok Heros URDF/XACRO to param server -->
   <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find bresilla)/urdf/heros_3.xacro'" />
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -z 0.4 -x -4 -y 4 -model heros -param robot_description"/>
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -z 0.4 -x 0 -y 0.4 -model heros -param robot_description"/>
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
@@ -35,22 +35,52 @@
   <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster"
       args="0 0 0 0 0 0 map odom 100"/>
 
-  <!-- Localization-->
+    <!-- Localization-->
   <node pkg="amcl" type="amcl" name="amcl" output="screen">
     <remap from="scan" to="bresilla/laser/scan"/>
-    <param name="odom_frame_id" value="odom"/>
-    <param name="odom_model_type" value="diff-corrected"/>
+    <param name="transform_tolerance" value="0.1" /> <!-- 0.1 -->
+    <param name="min_particles" value="50"/> <!-- 500 -->
+    <param name="max_particles" value="500"/> <!-- 5000 -->
+    <param name="update_min_d" value="0.1"/> <!-- 0.2 -->
+    <param name="update_min_a" value="0.13"/> <!-- π/6.0 radians 0.5236 -->
+    <param name="resample_interval" value="2"/> <!-- 2 -->
+    <param name="initial_pose_x" value="0.0"/> <!-- 0.0 -->
+    <param name="initial_pose_y" value="0.0"/> <!-- 0.0 -->
+    <param name="initial_pose_a" value="0.0"/> <!-- 0.0 -->
+    <param name="initial_cov_xx" value="1.0"/> <!-- 0.0 -->
+    <param name="initial_cov_yy" value="1.0"/> <!-- 0.0 -->
+    <param name="initial_cov_aa" value="1.0"/> <!-- 0.0 -->
+    <param name="kld_err" value="0.05"/>
+    <param name="kld_z" value="0.99"/>
+    <param name="gui_publish_rate" value="10.0"/>   <!-- 10.0 -->
+
+    <!-- Laser parameters -->
+    <param name="laser_model_type" value="likelihood_field"/>
+    <param name="laser_likelihood_max_dist" value="2.0"/>
+    <param name="laser_min_range" value="-1"/> <!-- -1 -->
+    <param name="laser_max_range" value="-1"/> <!-- -1 -->
+    <param name="laser_max_beams" value="30"/> <!-- 30 -->
+    <param name="laser_z_hit" value="0.95"/> <!-- 0.95 -->
+    <param name="laser_z_short" value="0.1"/> <!-- 0.1 -->
+    <param name="laser_z_max" value="0.05"/> <!-- 0.05 -->
+    <param name="laser_z_rand" value="0.05"/> <!-- 0.05 -->
+    <param name="laser_sigma_hit" value="0.2"/> <!-- 0.2 -->
+    <param name="laser_lambda_short" value="0.1"/> <!-- 0.1 -->
+    <param name="resample_interval" value="1"/>
+
+    <!-- Odometry model parameters -->
+    <param name="odom_model_type" value="diff"/> <!-- diff -->
+    <param name="odom_frame_id" value="odom"/> <!-- odom -->
     <param name="base_frame_id" value="base_link"/>
     <param name="global_frame_id" value="map"/>
-    <param name="min_particles" value="50"/>
-    <param name="max_particles" value="500"/>
-    <param name="transform_tolerance" value="0.2"/>
-    <param name="initial_pose_x" value="-4"/>
-    <param name="initial_pose_y" value="4"/>
-    <param name="initial_pose_a" value="-0.785"/>
-    <param name="laser_model_type" value="likelihood_field_prob"/>
+    <param name="odom_alpha1" value="0.5"/> <!-- 0.2 -->
+    <param name="odom_alpha2" value="0.4"/> <!-- 0.2 -->
+    <param name="odom_alpha3" value="0.1"/> <!-- 0.2 -->
+    <param name="odom_alpha4" value="0.4"/> <!-- 0.2 -->
+    <param name="odom_alpha5" value="0.2"/> <!-- 0.2 -->
+
   </node>
-  
+
   <!-- Move base -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <rosparam file="$(find bresilla)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
@@ -63,8 +93,15 @@
     <remap from="odom" to="odom"/>
     <remap from="scan" to="bresilla/laser/scan"/>
 
-    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <param name="base_global_planner" type="string" value="global_planner/GlobalPlanner" />
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+    <param name="base_local_planner" value="eband_local_planner/EBandPlannerROS"/>
+    <param name="controller_frequency" value="30.0" />
+    <param name="planner_frequency" value="10.0" />
+
+
   </node>
+
 
 </launch>
